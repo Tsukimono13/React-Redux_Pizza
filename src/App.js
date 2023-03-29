@@ -3,9 +3,12 @@ import Header from "./components/header/Header";
 import Categories from "./components/categories/Categories";
 import Sort from "./components/sort/Sort";
 import PizzaBlock from "./components/pizza-block/PizzaBlock";
+import {useState} from "react";
 
 
 function App() {
+
+
     return (
         <div className="wrapper">
             <Header/>
@@ -17,7 +20,7 @@ function App() {
                     </div>
                     <h2 className="content__title">Все пиццы</h2>
                     <div className="content__items">
-                        <PizzaBlock title="Мексиканская" price={390}/>
+                        <PizzaBlock title="Мексиканская" price={390} />
                         <PizzaBlock title="Мясная" price={423}/>
                         <PizzaBlock title="Сырная" price={299}/>
                     </div>
