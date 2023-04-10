@@ -7,14 +7,14 @@ const Header = () => {
         <div className="header">
             <div className="container">
                 <Link to="/">
-                <div className="header__logo">
-                    <img width="38" src={LogoSvg} alt="Pizza logo"/>
-                    <div>
-                        <h1>React Pizza</h1>
-                        <p>самая вкусная пицца во вселенной</p>
+                    <div className="header__logo">
+                        <img width="38" src={LogoSvg} alt="Pizza logo"/>
+                        <div>
+                            <h1>React Pizza</h1>
+                            <p>самая вкусная пицца во вселенной</p>
+                        </div>
                     </div>
-                </div>
-            </Link>
+                </Link>
                 <div className="header__cart">
                     <Link to="/cart" className="button button--cart">
                         <span>520 ₽</span>
