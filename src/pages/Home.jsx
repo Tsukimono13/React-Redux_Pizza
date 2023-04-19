@@ -4,7 +4,7 @@ import Sort from "../components/sort/Sort";
 import Skeleton from "../components/pizza-block/Skeleton";
 import PizzaBlock from "../components/pizza-block/PizzaBlock";
 
-const Home = () => {
+const Home = ({searchValue}) => {
     const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [categoryId, setCategoryId] = useState(0)
