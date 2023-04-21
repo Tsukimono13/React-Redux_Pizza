@@ -1,11 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Categories from "../components/categories/Categories";
 import Sort from "../components/sort/Sort";
 import Skeleton from "../components/pizza-block/Skeleton";
 import PizzaBlock from "../components/pizza-block/PizzaBlock";
 import Pagination from "../components/Pagination/Pagination";
+import {AppContext} from "../App";
 
-const Home = ({searchValue}) => {
+
+const Home = () => {
+    const {searchValue} = useContext(AppContext)
     const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [categoryId, setCategoryId] = useState(0)
@@ -26,11 +29,12 @@ const Home = ({searchValue}) => {
                 setItems(arr)
                 setIsLoading(false)
             })
-        //window.scrollTo(0, 0)
+        window.scrollTo(0, 0)
     }, [categoryId, sortType, searchValue, currentPage])
 
 
-    const pizzas = items/*.filter((obj) => {
+    const pizzas = items
+        /*.filter((obj) => {
         return !!obj.title.toLowerCase().includes(searchValue.toLowerCase());
     })*/.map((obj) => (<PizzaBlock key={obj.id} {...obj}/>))
     const skeletons = [...new Array(10)].map((index) => <Skeleton key={index}/>)
@@ -44,7 +48,7 @@ const Home = ({searchValue}) => {
             <div className="content__items">
                 {isLoading ? skeletons : pizzas}
             </div>
-            <Pagination onChangePage={(number)=> setCurrentPage(number)}/>
+            <Pagination onChangePage={(number) => setCurrentPage(number)}/>
         </div>
     );
 };
