@@ -7,6 +7,7 @@ import Pagination from "../components/Pagination/Pagination";
 import {AppContext} from "../App";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId} from "../redux/slices/filterSlice";
+import axios from "axios";
 
 
 const Home = () => {
@@ -23,16 +24,15 @@ const Home = () => {
     }
     useEffect(() => {
         setIsLoading(true)
-        const order = sort.sortProperty.includes('-') ? 'acs' : 'desc'
+        const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
-        fetch(
-            `https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
+
+        axios.get(`https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
                 &order=${order}${search}`)
-            .then(res => res.json())
-            .then(arr => {
-                setItems(arr)
+            .then((res)=> {
+                setItems(res.data)
                 setIsLoading(false)
             })
         window.scrollTo(0, 0)

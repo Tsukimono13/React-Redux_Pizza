@@ -13,7 +13,7 @@ const list = [
 
 const Sort = () => {
     const [open, setOpen] = useState(false)
-    const sort = useSelector((state) => state.filterSlice.sort)
+    const sort = useSelector(state => state.filterSlice.sort)
     const dispatch = useDispatch()
 
     const onClickListItem = (obj) => {
