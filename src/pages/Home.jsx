@@ -8,11 +8,13 @@ import {AppContext} from "../App";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setPageCount} from "../redux/slices/filterSlice";
 import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 
 
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filterSlice)
     const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const {searchValue} = useContext(AppContext)
     const [items, setItems] = useState([])
@@ -22,25 +24,34 @@ const Home = () => {
     const onChangeCategory = (id) => {
         dispatch(setCategoryId(id))
     }
+
     const onChangePageCount = (number) => {
         dispatch(setPageCount(number))
     }
+
     useEffect(() => {
         setIsLoading(true)
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
-        const search = searchValue ? `&search=${searchValue}` : ''
+        const search = searchValue ? `search=${searchValue}` : ''
 
-        axios.get(`https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
+        axios
+            .get(`https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
                 &order=${order}${search}`)
-            .then((res)=> {
+            .then((res) => {
                 setItems(res.data)
                 setIsLoading(false)
             })
         window.scrollTo(0, 0)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
+    useEffect(() => {
+        const queryString = qs.stringify({
+            sortProperty: sort.sortProperty, categoryId, currentPage
+        })
+        navigate(`?${queryString}`);
+    }, [categoryId, sort.sortProperty, currentPage])
 
     const pizzas = items
         /*.filter((obj) => {
