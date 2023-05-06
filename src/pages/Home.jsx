@@ -1,20 +1,23 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Categories from "../components/categories/Categories";
-import Sort from "../components/sort/Sort";
+import Sort, {list} from "../components/sort/Sort";
 import Skeleton from "../components/pizza-block/Skeleton";
 import PizzaBlock from "../components/pizza-block/PizzaBlock";
 import Pagination from "../components/Pagination/Pagination";
 import {AppContext} from "../App";
 import {useDispatch, useSelector} from "react-redux";
-import {setCategoryId, setPageCount} from "../redux/slices/filterSlice";
+import {setCategoryId, setFilters, setPageCount} from "../redux/slices/filterSlice";
 import axios from "axios";
 import {useNavigate} from 'react-router-dom'
+import qs from "qs";
 
 
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filterSlice)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const isSearch = useRef(false)
+    const isMounted = useRef(false)
 
     const {searchValue} = useContext(AppContext)
     const [items, setItems] = useState([])
@@ -29,12 +32,12 @@ const Home = () => {
         dispatch(setPageCount(number))
     }
 
-    useEffect(() => {
+    const fetchPizzas = () => {
         setIsLoading(true)
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
-        const search = searchValue ? `search=${searchValue}` : ''
+        const search = searchValue ? `&search=${searchValue}` : ''
 
         axios
             .get(`https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
@@ -43,15 +46,39 @@ const Home = () => {
                 setItems(res.data)
                 setIsLoading(false)
             })
+    }
+// Если изменили параметры и был первый рендер
+    useEffect(() => {
+        if (isMounted.current) {
+            const queryString = qs.stringify({
+                sortProperty: sort.sortProperty, categoryId, currentPage
+            })
+            navigate(`?${queryString}`);
+        }
+        isMounted.current = true
+    }, [categoryId, sort.sortProperty, currentPage])
+
+    // Если был первый рендер, то провряем URL-параметры и сохраняем в редакс
+    useEffect(() => {
+        if (window.location.search) {
+            const params = qs.parse(window.location.search.substring(1))
+            const sort = list.find(obj => obj.sortProperty === params.sortProperty)
+
+            dispatch(setFilters({
+                ...params, sort
+            }))
+            isSearch.current = true
+        }
+    }, [])
+
+    // Если был акпвый запрос, то запрашиваем пиццы
+    useEffect(() => {
+        if (!isSearch.current) {
+            fetchPizzas()
+        }
+        isSearch.current = false
         window.scrollTo(0, 0)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
-
-    useEffect(() => {
-        const queryString = qs.stringify({
-            sortProperty: sort.sortProperty, categoryId, currentPage
-        })
-        navigate(`?${queryString}`);
-    }, [categoryId, sort.sortProperty, currentPage])
 
     const pizzas = items
         /*.filter((obj) => {
