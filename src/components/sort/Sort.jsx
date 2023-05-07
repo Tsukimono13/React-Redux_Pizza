@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {setSort} from "../../redux/slices/filterSlice";
 
@@ -13,6 +13,7 @@ export const list = [
 
 const Sort = React.memo(() => {
     const [open, setOpen] = useState(false)
+    const sortRef = React.useRef(null)
     const sort = useSelector(state => state.filterSlice.sort)
     const dispatch = useDispatch()
 
@@ -20,8 +21,33 @@ const Sort = React.memo(() => {
         dispatch(setSort(obj))
         setOpen(false)
     }
+
+   /* useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.path.includes(sortRef.current)) {
+                setOpen(false)
+            }
+        }
+        document.body.addEventListener('click', handleClickOutside)
+        return () => {
+            document.body.removeEventListener('click', handleClickOutside)
+        }
+    }, [])*/
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            const path = event.composedPath();
+            if (path && !path.includes(sortRef.current)) {
+                setOpen(false)
+            }
+        }
+        document.body.addEventListener('click', handleClickOutside)
+        return () => document.body.removeEventListener('click', handleClickOutside)
+    }, [])
+
+
     return (
-        <div className="sort">
+        <div ref={sortRef} className="sort">
             <div className="sort__label">
                 <svg
                     width="10"
@@ -36,13 +62,14 @@ const Sort = React.memo(() => {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={()=> setOpen(!open)}>{sort.name}</span>
+                <span onClick={() => setOpen(!open)}>{sort.name}</span>
             </div>
             {open && (
                 <div className="sort__popup">
                     <ul>
                         {list.map((obj, i) => (
-                            <li key={i} onClick={() => onClickListItem(obj)} className={sort.sortProperty === obj.sortProperty ? "active" : ""}>
+                            <li key={i} onClick={() => onClickListItem(obj)}
+                                className={sort.sortProperty === obj.sortProperty ? "active" : ""}>
                                 {obj.name}</li>))
                         }
                     </ul>
