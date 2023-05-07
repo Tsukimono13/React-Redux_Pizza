@@ -14,7 +14,7 @@ export const list = [
 const Sort = React.memo(() => {
     const [open, setOpen] = useState(false)
     const sortRef = React.useRef(null)
-    const sort = useSelector(state => state.filterSlice.sort)
+    const sort = useSelector((state) => state.filterSlice.sort)
     const dispatch = useDispatch()
 
     const onClickListItem = (obj) => {
