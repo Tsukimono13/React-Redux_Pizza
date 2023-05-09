@@ -7,20 +7,20 @@ import Pagination from "../components/Pagination/Pagination";
 import {AppContext} from "../App";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setFilters, setPageCount} from "../redux/slices/filterSlice";
-import axios from "axios";
 import {useNavigate} from 'react-router-dom'
 import qs from "qs";
+import {pizzaThunks, setPizzas} from "../redux/slices/pizzaSlice";
 
 
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filterSlice)
+    const {items} = useSelector((state) => state.pizzaSlice)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isSearch = useRef(false)
     const isMounted = useRef(false)
 
     const {searchValue} = useContext(AppContext)
-    const [items, setItems] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
 
@@ -32,21 +32,28 @@ const Home = () => {
         dispatch(setPageCount(number))
     }
 
-    const fetchPizzas = () => {
+    const getPizzas = async () => {
         setIsLoading(true)
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
 
-        axios
-            .get(`https://642f12262b883abc641ddda8.mockapi.io/pizza-items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}
-                &order=${order}${search}`)
-            .then((res) => {
-                setItems(res.data)
-                setIsLoading(false)
-            })
+        try {
+            dispatch(pizzaThunks.fetchPizzas({
+                order,
+                sortBy,
+                category,
+                search,
+                currentPage
+            }))
+        } catch (e) {
+            console.log(e)
+        } finally {
+            setIsLoading(false)
+        }
     }
+
 // Если изменили параметры и был первый рендер
     useEffect(() => {
         if (isMounted.current) {
@@ -74,7 +81,7 @@ const Home = () => {
     // Если был акпвый запрос, то запрашиваем пиццы
     useEffect(() => {
         if (!isSearch.current) {
-            fetchPizzas()
+            getPizzas()
         }
         isSearch.current = false
         window.scrollTo(0, 0)
