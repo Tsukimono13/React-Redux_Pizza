@@ -9,19 +9,18 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setFilters, setPageCount} from "../redux/slices/filterSlice";
 import {useNavigate} from 'react-router-dom'
 import qs from "qs";
-import {pizzaThunks, setPizzas} from "../redux/slices/pizzaSlice";
+import {pizzaThunks} from "../redux/slices/pizzaSlice";
 
 
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filterSlice)
-    const {items} = useSelector((state) => state.pizzaSlice)
+    const {items, status} = useSelector((state) => state.pizzaSlice)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const isSearch = useRef(false)
     const isMounted = useRef(false)
 
     const {searchValue} = useContext(AppContext)
-    const [isLoading, setIsLoading] = useState(true)
 
 
     const onChangeCategory = (id) => {
@@ -33,13 +32,11 @@ const Home = () => {
     }
 
     const getPizzas = async () => {
-        setIsLoading(true)
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
 
-        try {
             dispatch(pizzaThunks.fetchPizzas({
                 order,
                 sortBy,
@@ -47,11 +44,6 @@ const Home = () => {
                 search,
                 currentPage
             }))
-        } catch (e) {
-            console.log(e)
-        } finally {
-            setIsLoading(false)
-        }
     }
 
 // Если изменили параметры и был первый рендер
@@ -80,10 +72,8 @@ const Home = () => {
 
     // Если был акпвый запрос, то запрашиваем пиццы
     useEffect(() => {
-        if (!isSearch.current) {
             getPizzas()
-        }
-        isSearch.current = false
+        //isSearch.current = false
         window.scrollTo(0, 0)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
@@ -100,7 +90,7 @@ const Home = () => {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
-                {isLoading ? skeletons : pizzas}
+                {status === 'loading' ? skeletons : pizzas}
             </div>
             <Pagination currentPage={currentPage} onChangePage={onChangePageCount}/>
         </div>
