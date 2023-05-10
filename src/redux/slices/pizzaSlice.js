@@ -38,6 +38,7 @@ const pizzaSlice = createSlice({
             })
     }
 })
+export const pizzasSelector = (state) => state.pizzaSlice
 
 export const {setPizzas} = pizzaSlice.actions
 export const pizzaThunks = {fetchPizzas};
