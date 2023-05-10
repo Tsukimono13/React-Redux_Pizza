@@ -15,9 +15,10 @@ import {pizzaThunks} from "../redux/slices/pizzaSlice";
 const Home = () => {
     const {categoryId, sort, currentPage} = useSelector((state) => state.filterSlice)
     const {items, status} = useSelector((state) => state.pizzaSlice)
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const isSearch = useRef(false)
+
     const isMounted = useRef(false)
 
     const {searchValue} = useContext(AppContext)
@@ -31,7 +32,7 @@ const Home = () => {
         dispatch(setPageCount(number))
     }
 
-    const getPizzas = async () => {
+    const getPizzas = () => {
         const order = sort.sortProperty.includes('-') ? 'asc' : 'desc'
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
@@ -66,14 +67,12 @@ const Home = () => {
             dispatch(setFilters({
                 ...params, sort
             }))
-            isSearch.current = true
         }
     }, [])
 
     // Если был акпвый запрос, то запрашиваем пиццы
     useEffect(() => {
             getPizzas()
-        //isSearch.current = false
         window.scrollTo(0, 0)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
@@ -89,9 +88,14 @@ const Home = () => {
                 <Sort/>
             </div>
             <h2 className="content__title">Все пиццы</h2>
-            <div className="content__items">
-                {status === 'loading' ? skeletons : pizzas}
-            </div>
+            {status === 'error' ? (
+                <div className="content__error-info">
+                    <h2>Произошла ошибка 😕</h2>
+                    <p>К сожалению, не удалось получить питсы. Попробуйте повторить попытку позже.</p>
+                </div>
+            ) : (
+                <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
+            )}
             <Pagination currentPage={currentPage} onChangePage={onChangePageCount}/>
         </div>
     );
