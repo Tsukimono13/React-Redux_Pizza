@@ -6,7 +6,7 @@ import PizzaBlock from "../components/pizza-block/PizzaBlock";
 import Pagination from "../components/pagination/Pagination";
 import {useDispatch, useSelector} from "react-redux";
 import {filterSelector, setCategoryId, setFilters, setPageCount} from "../redux/slices/filterSlice";
-import {useNavigate} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import qs from "qs";
 import {pizzasSelector, pizzaThunks} from "../redux/slices/pizzaSlice";
 
@@ -32,13 +32,13 @@ const Home = () => {
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
 
-            dispatch(pizzaThunks.fetchPizzas({
-                order,
-                sortBy,
-                category,
-                search,
-                currentPage
-            }))
+        dispatch(pizzaThunks.fetchPizzas({
+            order,
+            sortBy,
+            category,
+            search,
+            currentPage
+        }))
     }
 
 // Если изменили параметры и был первый рендер
@@ -66,14 +66,18 @@ const Home = () => {
 
     // Если был акпвый запрос, то запрашиваем пиццы
     useEffect(() => {
-            getPizzas()
+        getPizzas()
         window.scrollTo(0, 0)
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
     const pizzas = items
         /*.filter((obj) => {
         return !!obj.title.toLowerCase().includes(searchValue.toLowerCase());
-    })*/.map((obj) => (<PizzaBlock key={obj.id} {...obj}/>))
+    })*/.map((obj) =>
+            (<Link key={obj.id} to={`/pizza/${obj.id}`}>
+                <PizzaBlock {...obj}/>
+            </Link>))
+
     const skeletons = [...new Array(10)].map((index) => <Skeleton key={index}/>)
     return (
         <div className="container">
