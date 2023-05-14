@@ -18,12 +18,12 @@ const Home = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const onChangeCategory = (id) => {
+    const onChangeCategory = (id: number) => {
         dispatch(setCategoryId(id))
     }
 
-    const onChangePageCount = (number) => {
-        dispatch(setPageCount(number))
+    const onChangePageCount = (num: number) => {
+        dispatch(setPageCount(num))
     }
 
     const getPizzas = () => {
@@ -31,7 +31,7 @@ const Home = () => {
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
-
+// @ts-ignore
         dispatch(pizzaThunks.fetchPizzas({
             order,
             sortBy,
@@ -73,7 +73,7 @@ const Home = () => {
     const pizzas = items
         /*.filter((obj) => {
         return !!obj.title.toLowerCase().includes(searchValue.toLowerCase());
-    })*/.map((obj) =>
+    })*/.map((obj: any) =>
             (<Link key={obj.id} to={`/pizza/${obj.id}`}>
                 <PizzaBlock {...obj}/>
             </Link>))

@@ -7,7 +7,6 @@ type ListType = {
     sortProperty: string
 }
 
-
 export const list:ListType[] = [
     {name: "популярности (DESC)", sortProperty: "rating"},
     {name: "популярности (ASC)", sortProperty: "-rating"},
@@ -29,9 +28,9 @@ const Sort = React.memo(() => {
     }
 
     useEffect(() => {
-        const handleClickOutside = (event: any) => {
+        const handleClickOutside = (event: MouseEvent) => {
             const path = event.composedPath();
-            if (path && !path.includes(sortRef.current)) {
+            if (sortRef.current && path && !path.includes(sortRef.current)) {
                 setOpen(false)
             }
         }
