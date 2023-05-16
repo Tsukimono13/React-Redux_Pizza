@@ -1,21 +1,29 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Categories from "../components/categories/Categories";
 import Sort, {list} from "../components/sort/Sort";
 import Skeleton from "../components/pizza-block/Skeleton";
 import PizzaBlock from "../components/pizza-block/PizzaBlock";
 import Pagination from "../components/pagination/Pagination";
-import {useDispatch, useSelector} from "react-redux";
-import {filterSelector, setCategoryId, setFilters, setPageCount} from "../redux/slices/filterSlice";
+import {useSelector} from "react-redux";
+import {
+    filterSelector,
+    InitialStateType,
+    setCategoryId,
+    setFilters,
+    setPageCount,
+    SortType
+} from "redux/slices/filterSlice";
 import {Link, useNavigate} from 'react-router-dom'
 import qs from "qs";
-import {pizzasSelector, pizzaThunks} from "../redux/slices/pizzaSlice";
+import {ParamsType, pizzasSelector, pizzaThunks} from "redux/slices/pizzaSlice";
+import {useAppDispatch} from "redux/store";
 
 
 const Home = () => {
     const {categoryId, sort, currentPage, searchValue} = useSelector(filterSelector)
     const {items, status} = useSelector(pizzasSelector)
     const isMounted = useRef(false)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
     const onChangeCategory = (id: number) => {
@@ -31,18 +39,18 @@ const Home = () => {
         const sortBy = sort.sortProperty.replace('-', '')
         const category = categoryId > 0 ? `category=${categoryId}` : ''
         const search = searchValue ? `&search=${searchValue}` : ''
-// @ts-ignore
+
         dispatch(pizzaThunks.fetchPizzas({
             order,
             sortBy,
             category,
             search,
-            currentPage
+            currentPage: String(currentPage)
         }))
     }
 
 // Если изменили параметры и был первый рендер
-    useEffect(() => {
+/*    useEffect(() => {
         if (isMounted.current) {
             const queryString = qs.stringify({
                 sortProperty: sort.sortProperty, categoryId, currentPage
@@ -55,14 +63,16 @@ const Home = () => {
     // Если был первый рендер, то провряем URL-параметры и сохраняем в редакс
     useEffect(() => {
         if (window.location.search) {
-            const params = qs.parse(window.location.search.substring(1))
-            const sort = list.find(obj => obj.sortProperty === params.sortProperty)
-
+            const params = (qs.parse(window.location.search.substring(1)) as unknown) as ParamsType
+            const sort = list.find(obj => obj.sortProperty === params.sortBy)
             dispatch(setFilters({
-                ...params, sort
+                searchValue: params.search,
+                categoryId: Number(params.category),
+                currentPage: Number(params.currentPage),
+                sort: sort || list[0]
             }))
         }
-    }, [])
+    }, [])*/
 
     // Если был акпвый запрос, то запрашиваем пиццы
     useEffect(() => {
@@ -74,16 +84,16 @@ const Home = () => {
         /*.filter((obj) => {
         return !!obj.title.toLowerCase().includes(searchValue.toLowerCase());
     })*/.map((obj: any) =>
-            (<Link key={obj.id} to={`/pizza/${obj.id}`}>
+            (
                 <PizzaBlock {...obj}/>
-            </Link>))
+            ))
 
     const skeletons = [...new Array(10)].map((index) => <Skeleton key={index}/>)
     return (
         <div className="container">
             <div className="content__top">
                 <Categories value={categoryId} onChangeCategory={onChangeCategory}/>
-                <Sort/>
+                <Sort value={sort}/>   {/* //пофткстьь*/}
             </div>
             <h2 className="content__title">Все пиццы</h2>
             {status === 'error' ? (

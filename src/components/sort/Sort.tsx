@@ -1,28 +1,32 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {filterSelector, setSort} from "../../redux/slices/filterSlice";
+import {filterSelector, setSort, SortPropertyEnum, SortType} from "redux/slices/filterSlice";
 
 type ListType = {
     name: string
-    sortProperty: string
+    sortProperty: SortPropertyEnum
 }
 
-export const list:ListType[] = [
-    {name: "популярности (DESC)", sortProperty: "rating"},
-    {name: "популярности (ASC)", sortProperty: "-rating"},
-    {name: "цене (DESC)", sortProperty: "price"},
-    {name: "цене (ASC)", sortProperty: "-price"},
-    {name: "алфавиту (DESC)", sortProperty: "title"},
-    {name: "алфавиту (ASC)", sortProperty: "-title"}
+type PropsType = {
+    value: SortType
+}
+
+export const list: ListType[] = [
+    { name: 'популярности (DESC)', sortProperty: SortPropertyEnum.RATING_DESC },
+    { name: 'популярности (ASC)', sortProperty: SortPropertyEnum.RATING_ASC },
+    { name: 'цене (DESC)', sortProperty: SortPropertyEnum.PRICE_DESC },
+    { name: 'цене (ASC)', sortProperty: SortPropertyEnum.PRICE_ASC },
+    { name: 'алфавиту (DESC)', sortProperty: SortPropertyEnum.TITLE_DESC },
+    { name: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ]
 
-const Sort = React.memo(() => {
+const Sort: React.FC<PropsType> = React.memo(({value}) => {
     const [open, setOpen] = useState(false)
     const sortRef = React.useRef<HTMLDivElement>(null)
     const sort = useSelector(filterSelector)
     const dispatch = useDispatch()
 
-    const onClickListItem = (obj:ListType) => {
+    const onClickListItem = (obj: ListType) => {
         dispatch(setSort(obj))
         setOpen(false)
     }
@@ -55,14 +59,14 @@ const Sort = React.memo(() => {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={() => setOpen(!open)}>{sort.name}</span>
+                <span onClick={() => setOpen(!open)}>{value.name}</span>
             </div>
             {open && (
                 <div className="sort__popup">
                     <ul>
                         {list.map((obj, i) => (
                             <li key={i} onClick={() => onClickListItem(obj)}
-                                className={sort.sortProperty === obj.sortProperty ? "active" : ""}>
+                                className={value.sortProperty === obj.sortProperty ? "active" : ""}>
                                 {obj.name}</li>))
                         }
                     </ul>
