@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {filterSelector, setSort, SortPropertyEnum, SortType} from "redux/slices/filterSlice";
+import {useDispatch} from "react-redux";
+import {setSort, SortPropertyEnum, SortType} from "redux/slices/filterSlice";
 
 type ListType = {
     name: string
@@ -23,7 +23,6 @@ export const list: ListType[] = [
 const Sort: React.FC<PropsType> = React.memo(({value}) => {
     const [open, setOpen] = useState(false)
     const sortRef = React.useRef<HTMLDivElement>(null)
-    const sort = useSelector(filterSelector)
     const dispatch = useDispatch()
 
     const onClickListItem = (obj: ListType) => {

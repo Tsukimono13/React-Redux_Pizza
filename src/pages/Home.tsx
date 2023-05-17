@@ -14,21 +14,22 @@ import {
     SortType
 } from "redux/slices/filterSlice";
 import {Link, useNavigate} from 'react-router-dom'
-import qs from "qs";
-import {ParamsType, pizzasSelector, pizzaThunks} from "redux/slices/pizzaSlice";
+
+import { pizzasSelector, pizzaThunks} from "redux/slices/pizzaSlice";
 import {useAppDispatch} from "redux/store";
 
 
 const Home = () => {
     const {categoryId, sort, currentPage, searchValue} = useSelector(filterSelector)
+    console.log(sort)
     const {items, status} = useSelector(pizzasSelector)
     const isMounted = useRef(false)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const onChangeCategory = (id: number) => {
+    const onChangeCategory = React.useCallback((id: number) => {
         dispatch(setCategoryId(id))
-    }
+    }, [])
 
     const onChangePageCount = (num: number) => {
         dispatch(setPageCount(num))
@@ -83,17 +84,15 @@ const Home = () => {
     const pizzas = items
         /*.filter((obj) => {
         return !!obj.title.toLowerCase().includes(searchValue.toLowerCase());
-    })*/.map((obj: any) =>
-            (
-                <PizzaBlock {...obj}/>
+    })*/.map((obj: any) => (
+                <PizzaBlock key={obj.id} {...obj}/>
             ))
-
     const skeletons = [...new Array(10)].map((index) => <Skeleton key={index}/>)
     return (
         <div className="container">
             <div className="content__top">
                 <Categories value={categoryId} onChangeCategory={onChangeCategory}/>
-                <Sort value={sort}/>   {/* //пофткстьь*/}
+                <Sort value={sort}/>
             </div>
             <h2 className="content__title">Все пиццы</h2>
             {status === 'error' ? (
