@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {addItem, cartItemByIdSelector, ItemsType} from "../../redux/slices/cartSlice";
-import CartItem from "components/CartItem";
+import {addItem} from "redux/cart/cartSlice";
 import {Link} from "react-router-dom";
+import {cartItemByIdSelector} from "redux/cart/selectors";
+import {ItemsType} from "redux/cart/types";
 
 type PropsType = {
     id: string

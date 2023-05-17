@@ -6,17 +6,16 @@ import PizzaBlock from "../components/pizza-block/PizzaBlock";
 import Pagination from "../components/pagination/Pagination";
 import {useSelector} from "react-redux";
 import {
-    filterSelector,
-    InitialStateType,
     setCategoryId,
-    setFilters,
-    setPageCount,
-    SortType
-} from "redux/slices/filterSlice";
-import {Link, useNavigate} from 'react-router-dom'
 
-import { pizzasSelector, pizzaThunks} from "redux/slices/pizzaSlice";
+    setPageCount,
+} from "redux/filter/filterSlice";
+import {useNavigate} from 'react-router-dom'
+
+import {pizzaThunks} from "redux/pizza/pizzaSlice";
 import {useAppDispatch} from "redux/store";
+import {filterSelector} from "redux/filter/selectors";
+import {pizzasSelector} from "redux/pizza/selectors";
 
 
 const Home = () => {
