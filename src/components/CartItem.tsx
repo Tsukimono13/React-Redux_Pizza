@@ -12,7 +12,7 @@ type PropsType = {
     type: string
     size: number
 }
-const CartItem: React.FC<PropsType> = ({id, title, price, imageUrl, count, type, size}) => {
+export const CartItem: React.FC<PropsType> = ({id, title, price, imageUrl, count, type, size}) => {
     const dispatch = useDispatch()
     const onClickPlus = () => {
         dispatch(addItem({id} as ItemsType))
@@ -85,5 +85,3 @@ const CartItem: React.FC<PropsType> = ({id, title, price, imageUrl, count, type,
         </div>
     );
 };
-
-export default CartItem;

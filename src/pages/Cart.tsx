@@ -1,9 +1,8 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import CartItem from "../components/CartItem";
 import {clearItems} from "redux/cart/cartSlice";
-import CartEmpty from "../components/CartEmpty";
+import {CartEmpty, CartItem} from "components";
 import {cartSelector} from "redux/cart/selectors";
 
 const Cart: React.FC = () => {
@@ -18,6 +17,7 @@ const Cart: React.FC = () => {
     if (!totalPrice) {
         return <CartEmpty/>
     }
+
     return (
         <div className="container container--cart">
             <div className="cart">

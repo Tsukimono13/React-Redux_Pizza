@@ -21,7 +21,7 @@ export const list: ListType[] = [
     { name: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ]
 
-const Sort: React.FC<PropsType> = React.memo(({value}) => {
+export const Sort: React.FC<PropsType> = React.memo(({value}) => {
     const [open, setOpen] = useState(false)
     const sortRef = React.useRef<HTMLDivElement>(null)
     const dispatch = useDispatch()
@@ -75,5 +75,3 @@ const Sort: React.FC<PropsType> = React.memo(({value}) => {
         </div>
     );
 });
-
-export default Sort;

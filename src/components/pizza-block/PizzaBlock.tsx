@@ -14,7 +14,7 @@ type PropsType = {
     types: number[]
 }
 
-const PizzaBlock: React.FC<PropsType> = ({id, title, price, imageUrl, sizes, types}) => {
+export const PizzaBlock: React.FC<PropsType> = ({id, title, price, imageUrl, sizes, types}) => {
     const [activeType, setActiveType] = useState(0)
     const [activeSize, setActiveSize] = useState(0)
     const dispatch = useDispatch()
@@ -39,12 +39,12 @@ const PizzaBlock: React.FC<PropsType> = ({id, title, price, imageUrl, sizes, typ
         <div className="pizza-block-wrapper">
             <div className="pizza-block">
                 <Link key={id} to={`/pizza/${id}`}>
-                <img
-                    className="pizza-block__image"
-                    src={imageUrl}
-                    alt="Pizza"
-                />
-                <h4 className="pizza-block__title">{title}</h4>
+                    <img
+                        className="pizza-block__image"
+                        src={imageUrl}
+                        alt="Pizza"
+                    />
+                    <h4 className="pizza-block__title">{title}</h4>
                 </Link>
                 <div className="pizza-block__selector">
                     <ul>
@@ -80,5 +80,3 @@ const PizzaBlock: React.FC<PropsType> = ({id, title, price, imageUrl, sizes, typ
         </div>
     );
 };
-
-export default PizzaBlock;
