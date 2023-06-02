@@ -1,0 +1,14 @@
+.pizzaBlock {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pizzaImg {
+  width: 420px;
+  height: 420px;
+}
+.pizzaText{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
