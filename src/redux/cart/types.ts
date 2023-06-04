@@ -7,4 +7,3 @@ export type ItemsType = {
     size: number
     count: number
 }
-
